@@ -1,16 +1,24 @@
 [project]
 authors = [{name = "erfanhresh", email = "erfan_bcln@yahoo.com"}]
 dependencies = [
+  "beautifulsoup4",
   "fastapi",
+  "httpx",
   "jinja2",
+  "markdown",
+  "ollama",
+  "openai",
   "playwright",
   "pydantic",
+  "pydantic-settings",
+  "pypdf",
   "python-dotenv",
   "rich",
   "sqlalchemy",
   "sqlmodel",
   "typer",
   "uvicorn",
+  "weasyprint",
 ]
 name = "agentic-application-manager"
 requires-python = ">= 3.12"
@@ -57,6 +65,14 @@ ruff = ">=0.15.18,<0.16"
 mypy = ">=2.1.0,<3"
 tectonic = ">=0.16.9,<0.17"
 pydantic-settings = ">=2.14.2,<3"
+ollama = ">=0.24.0,<0.25"
+openai = ">=2.43.0,<3"
+httpx = ">=0.28.1,<0.29"
+beautifulsoup4 = ">=4.15.0,<5"
+markdown = ">=3.10.2,<4"
+pytest-asyncio = ">=1.4.0,<2"
+weasyprint = ">=69.0,<70"
+pypdf = ">=6.13.3,<7"
 
 [tool.ruff]
 line-length = 100

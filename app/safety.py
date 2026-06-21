@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 
 SAFETY_RULES = (
+    "Do not build an unattended mass-application bot.",
+    "Do not bypass CAPTCHA.",
+    "Do not auto-submit applications.",
+    "Do not answer sensitive questions without user-approved data.",
+    "Always show a review screen before filling sensitive fields.",
+    "The user must manually confirm submission.",
     "Never evade platform rate limits.",
     "Never scrape LinkedIn or Indeed at scale.",
     "Never fabricate skills, education, experience, dates, or work authorization.",

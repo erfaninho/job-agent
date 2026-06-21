@@ -14,7 +14,7 @@ class ApplicationStatus(StrEnum):
     prepared = "prepared"
     needs_review = "needs_review"
     ready_to_apply = "ready_to_apply"
-    applied = "applied"
+    browser_assist_started = "browser_assist_started"
     submitted = "submitted"
     follow_up_needed = "follow_up_needed"
     interview = "interview"
@@ -31,8 +31,11 @@ class Job(SQLModel, table=True):
     remote_type: str | None = None
     salary_min: int | None = None
     salary_max: int | None = None
+    currency: str | None = None
     source: str = "manual"
     source_url: str | None = None
+    final_application_url: str | None = None
+    ats_platform: str | None = None
     description_text: str
     description_html_path: str | None = None
     description_hash: str = Field(index=True)
@@ -46,6 +49,7 @@ class Job(SQLModel, table=True):
 class Application(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     job_id: int = Field(index=True, foreign_key="job.id")
+    application_date: datetime = Field(default_factory=utc_now)
     folder_path: str
     status: str = ApplicationStatus.found.value
     fit_score: float | None = None
@@ -74,3 +78,30 @@ class ApplicationEvent(SQLModel, table=True):
     event_type: str
     message: str
     created_at: datetime = Field(default_factory=utc_now)
+
+
+class ApplicationAnswer(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    application_id: int = Field(index=True, foreign_key="application.id")
+    question: str
+    question_type: str
+    generated_answer: str
+    approved_answer: str | None = None
+    requires_manual_review: bool = True
+    sensitive: bool = False
+    confidence: float = 0.0
+    created_at: datetime = Field(default_factory=utc_now)
+
+
+class ModelUsage(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    application_id: int | None = Field(default=None, index=True, foreign_key="application.id")
+    provider: str
+    model: str
+    prompt_name: str
+    input_tokens_if_available: int | None = None
+    output_tokens_if_available: int | None = None
+    started_at: datetime = Field(default_factory=utc_now)
+    finished_at: datetime | None = None
+    success: bool = False
+    error: str | None = None

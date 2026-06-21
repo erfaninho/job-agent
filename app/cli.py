@@ -1,3 +1,6 @@
+import shutil
+import sys
+from datetime import date, datetime
 from pathlib import Path
 
 import typer
@@ -5,9 +8,10 @@ from rich.console import Console
 from rich.table import Table
 from sqlmodel import select
 
-from app.config import get_settings
-from app.config import Settings
+from app.config import Settings, get_settings
+from app.logging_config import configure_logging
 from app.models.application import Application, Job
+from app.services.daily_summary_service import DailySummaryService
 from app.services.database import DatabaseService
 from app.services.job_input_service import JobInputService
 from app.services.preparation_service import PreparationService
@@ -15,12 +19,15 @@ from app.services.storage_service import StorageService
 
 app = typer.Typer(help="Local supervised job application manager.")
 profile_app = typer.Typer(help="Candidate profile commands.")
+db_app = typer.Typer(help="Database commands.")
 app.add_typer(profile_app, name="profile")
+app.add_typer(db_app, name="db")
 console = Console()
 
 
 def services() -> tuple[Settings, DatabaseService]:
     settings = get_settings()
+    configure_logging(settings)
     database = DatabaseService(settings)
     database.init_db()
     StorageService(settings).ensure_base_dirs()
@@ -29,9 +36,73 @@ def services() -> tuple[Settings, DatabaseService]:
 
 @app.command()
 def init() -> None:
-    settings, database = services()
+    settings, _ = services()
     StorageService(settings).setup_profile()
-    console.print("Initialized storage, profile files, answer bank, and SQLite database.")
+    console.print("Initialized storage, profile files, answer bank, logs, and SQLite database.")
+
+
+@app.command()
+def doctor() -> None:
+    settings, database = services()
+    table = Table("Check", "Status", "Detail")
+    table.add_row("Python", "ok", sys.version.split()[0])
+    for folder in settings.required_folders():
+        table.add_row(f"Folder {folder}", "ok" if folder.exists() else "missing", str(folder))
+    try:
+        database.init_db()
+        table.add_row("Database", "ok", settings.database_url)
+    except Exception as exc:
+        table.add_row("Database", "error", str(exc))
+    table.add_row(
+        "LaTeX compiler",
+        "ok" if shutil.which(settings.latex_compiler) else "missing",
+        settings.latex_compiler,
+    )
+    model_errors = settings.validate_model_settings()
+    if model_errors:
+        for error in model_errors:
+            table.add_row("Model settings", "error", error)
+    else:
+        table.add_row("Model settings", "ok", f"{settings.model_provider}:{settings.selected_model}")
+    if settings.model_provider == "ollama":
+        try:
+            import httpx
+
+            response = httpx.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags", timeout=2)
+            table.add_row(
+                "Ollama", "ok" if response.status_code == 200 else "error", settings.ollama_base_url
+            )
+        except Exception as exc:
+            table.add_row("Ollama", "warning", str(exc))
+    try:
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as playwright:
+            chromium_path = Path(playwright.chromium.executable_path)
+        table.add_row(
+            "Playwright browser",
+            "ok" if chromium_path.exists() else "missing",
+            str(chromium_path),
+        )
+    except Exception as exc:
+        table.add_row("Playwright browser", "warning", str(exc))
+    console.print(table)
+
+
+@db_app.command("init")
+def db_init() -> None:
+    _, database = services()
+    database.init_db()
+    console.print("Database initialized.")
+
+
+@db_app.command("reset")
+def db_reset(force: bool = typer.Option(False, "--force")) -> None:
+    if not force:
+        raise typer.BadParameter("Use --force to reset the development database.")
+    _, database = services()
+    database.reset_db()
+    console.print("Database reset.")
 
 
 @profile_app.command("setup")
@@ -39,6 +110,24 @@ def profile_setup() -> None:
     settings, _ = services()
     StorageService(settings).setup_profile()
     console.print(f"Profile created at {settings.profile_path}")
+
+
+@profile_app.command("validate")
+def profile_validate() -> None:
+    settings, _ = services()
+    missing = StorageService(settings).validate_profile()
+    if missing:
+        console.print("Profile is incomplete. Missing:")
+        for item in missing:
+            console.print(f"- {item}")
+        raise typer.Exit(code=1)
+    console.print("Profile files are valid.")
+
+
+@profile_app.command("show")
+def profile_show() -> None:
+    settings, _ = services()
+    console.print(StorageService(settings).load_profile().model_dump())
 
 
 @app.command("import-cv")
@@ -65,10 +154,15 @@ def add_job(
     else:
         raise typer.BadParameter("Provide --file, --text, or --url.")
     console.print(f"Job {job.id}: {job.company} - {job.title}")
+    console.print(f"Next: pixi run jobagent prepare {job.id}")
 
 
 @app.command("list")
-def list_applications(status: str | None = typer.Option(None, "--status")) -> None:
+def list_applications(
+    status: str | None = typer.Option(None, "--status"),
+    date_filter: str | None = typer.Option(None, "--date"),
+    company: str | None = typer.Option(None, "--company"),
+) -> None:
     _, database = services()
     table = Table("ID", "Company", "Role", "Status", "Fit", "Folder")
     with database.session() as session:
@@ -80,6 +174,11 @@ def list_applications(status: str | None = typer.Option(None, "--status")) -> No
     for application_record, job in rows:
         if status and application_record.status != status:
             continue
+        parsed_date = datetime.strptime(date_filter, "%Y-%m-%d").date() if date_filter else None
+        if parsed_date and application_record.application_date.date() != parsed_date:
+            continue
+        if company and company.lower() not in job.company.lower():
+            continue
         table.add_row(
             str(application_record.id),
             job.company,
@@ -89,6 +188,13 @@ def list_applications(status: str | None = typer.Option(None, "--status")) -> No
             application_record.folder_path,
         )
     console.print(table)
+
+
+@app.command("daily-summary")
+def daily_summary(target_date: str | None = None) -> None:
+    settings, database = services()
+    parsed_date = datetime.strptime(target_date, "%Y-%m-%d").date() if target_date else date.today()
+    console.print(DailySummaryService(settings, database).write_summary(parsed_date))
 
 
 @app.command("show")
@@ -125,6 +231,7 @@ def prepare(
     table = Table("Field", "Value")
     for key, value in summary.items():
         table.add_row(key, str(value))
+    table.add_row("next_command", f"pixi run jobagent show {summary.get('application_id')}")
     console.print(table)
 
 

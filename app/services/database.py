@@ -21,6 +21,10 @@ class DatabaseService:
     def init_db(self) -> None:
         SQLModel.metadata.create_all(self.engine)
 
+    def reset_db(self) -> None:
+        SQLModel.metadata.drop_all(self.engine)
+        SQLModel.metadata.create_all(self.engine)
+
     def session(self) -> Session:
         return Session(self.engine)
 

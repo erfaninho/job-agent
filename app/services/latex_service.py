@@ -9,8 +9,9 @@ class LatexService:
 
     def compile(self, tex_path: Path) -> Path | None:
         pdf_path = tex_path.with_suffix(".pdf")
+        compile_log = tex_path.with_name("compile_log.txt")
         if shutil.which(self.compiler) is None:
-            tex_path.with_name("latex_compile_error.log").write_text(
+            compile_log.write_text(
                 f"Compiler not found: {self.compiler}\n", encoding="utf-8"
             )
             return None
@@ -27,8 +28,9 @@ class LatexService:
             check=False,
         )
         if result.returncode != 0 or not pdf_path.exists():
-            tex_path.with_name("latex_compile_error.log").write_text(
+            compile_log.write_text(
                 result.stdout + "\n" + result.stderr, encoding="utf-8"
             )
             return None
+        compile_log.write_text(result.stdout + "\n" + result.stderr, encoding="utf-8")
         return pdf_path

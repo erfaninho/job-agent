@@ -25,5 +25,9 @@ def test_prepare_flow_creates_application_package(tmp_path: Path) -> None:
     summary = PreparationService(settings, database).prepare(job.id or 0)
     folder = Path(str(summary["application_folder_path"]))
     assert (folder / "01_analysis" / "fit_score.json").exists()
+    assert "prompt_version" in (folder / "01_analysis" / "model_usage.json").read_text(
+        encoding="utf-8"
+    )
     assert (folder / "02_cv" / "cv_tailored.tex").exists()
     assert (folder / "03_cover-letter" / "cover_letter.md").exists()
+    assert (folder / "04_application" / "application_answers.generated.json").exists()

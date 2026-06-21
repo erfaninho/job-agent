@@ -17,3 +17,9 @@ def test_profile_setup_and_cv_import(tmp_path: Path) -> None:
     imported = service.import_cv(cv)
     assert imported.exists()
     assert settings.answer_bank_path.exists()
+    assert settings.facts_path.exists()
+    assert settings.preferences_path.exists()
+    assert settings.links_path.exists()
+    assert settings.documents_path.exists()
+    assert settings.sensitive_answers_example_path.exists()
+    assert service.validate_profile() == []

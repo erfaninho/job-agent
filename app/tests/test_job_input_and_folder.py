@@ -24,4 +24,8 @@ def test_add_job_and_create_folder(tmp_path: Path) -> None:
     application = Application(job_id=job.id or 0, folder_path=str(folder))
     FolderService(settings).initialize_files(folder, job, application)
     assert (folder / "00_job-posting" / "job_description.md").exists()
+    assert folder.parent.name.count("-") == 2
+    assert (folder / "00_job-posting" / "final_application_url.txt").exists()
+    assert (folder / "01_analysis" / "model_usage.json").exists()
+    assert (folder / "04_application" / "application_answers.approved.json").exists()
     assert (folder / "metadata.json").exists()

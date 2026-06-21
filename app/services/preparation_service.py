@@ -14,6 +14,7 @@ from app.models.application import Application, ApplicationStatus, GeneratedDocu
 from app.services.database import DatabaseService
 from app.services.folder_service import FolderService
 from app.services.latex_service import LatexService
+from app.services.prompt_loader import PromptLoader
 from app.services.scoring_service import ScoringService
 from app.services.storage_service import StorageService
 
@@ -66,6 +67,22 @@ class PreparationService:
 
         analysis_path = folder / "01_analysis" / "extracted_requirements.json"
         analysis_path.write_text(parsed.model_dump_json(indent=2), encoding="utf-8")
+        prompt_loader = PromptLoader()
+        prompt_usage = [
+            {"prompt_name": name, "prompt_version": prompt_loader.version(name)}
+            for name in (
+                "job_parser.md",
+                "fit_score.md",
+                "application_planner.md",
+                "cv_tailor.md",
+                "cover_letter.md",
+                "application_answers.md",
+                "no_fabrication_reviewer.md",
+            )
+        ]
+        (folder / "01_analysis" / "model_usage.json").write_text(
+            json.dumps(prompt_usage, indent=2), encoding="utf-8"
+        )
         fit = ScoringService().score(parsed, profile)
         (folder / "01_analysis" / "fit_score.json").write_text(
             json.dumps(fit.to_dict(), indent=2), encoding="utf-8"
@@ -94,7 +111,7 @@ class PreparationService:
                 fit.strong_matches,
             ).to_dict()
         ]
-        answers_json = folder / "04_application" / "application_answers.json"
+        answers_json = folder / "04_application" / "application_answers.generated.json"
         answers_json.write_text(json.dumps(answers, indent=2), encoding="utf-8")
         (folder / "04_application" / "application_answers.md").write_text(
             "\n\n".join(f"## {a['question_label']}\n\n{a['answer']}" for a in answers),
@@ -137,6 +154,7 @@ class PreparationService:
                 "cv_tex_path": str(cv_path),
                 "cv_pdf_path": str(pdf_path) if pdf_path else None,
                 "cover_letter_path": str(cover_letter_path) if cover_letter_path else None,
+                "answers_generated_path": str(answers_json),
             }
         )
         self.folders.write_metadata(folder, metadata)

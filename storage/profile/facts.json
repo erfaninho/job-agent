@@ -1,0 +1,9 @@
+{
+  "approved_facts": [],
+  "blocked_claims": [
+    "Do not claim skills that are not in the CV or approved profile.",
+    "Do not claim work authorization unless confirmed by the user.",
+    "Do not claim years of experience unless explicitly stated.",
+    "Do not claim leadership experience unless explicitly confirmed."
+  ]
+}

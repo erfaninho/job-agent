@@ -1,0 +1,57 @@
+{
+  "why_this_role": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "why_this_company": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "tell_us_about_yourself": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "salary_expectation": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "notice_period": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "work_authorisation": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "visa_sponsorship": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "remote_work_preference": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "relocation_preference": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "availability_start_date": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  },
+  "preferred_work_style": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  }
+}
