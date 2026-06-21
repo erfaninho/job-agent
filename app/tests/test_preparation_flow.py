@@ -11,6 +11,7 @@ def test_prepare_flow_creates_application_package(tmp_path: Path) -> None:
     settings = Settings(
         JOBAGENT_STORAGE_PATH=tmp_path / "storage",
         JOBAGENT_DATABASE_URL=f"sqlite:///{tmp_path / 'jobagent.db'}",
+        MODEL_PROVIDER="local",
     )
     database = DatabaseService(settings)
     database.init_db()

@@ -790,25 +790,25 @@ The app needs structured job data before it can tailor the CV or prepare answers
 
 ### Tasks
 
-[ ] Add CLI command:
+[x] Add CLI command:
 
 ```bash
 jobagent add-job --file ./job.txt
 ```
 
-[ ] Add CLI command:
+[x] Add CLI command:
 
 ```bash
 jobagent add-job --url "https://example.com/job"
 ```
 
-[ ] Add CLI command:
+[x] Add CLI command:
 
 ```bash
 jobagent add-job --text "..."
 ```
 
-[ ] Save original job posting into:
+[x] Save original job posting into:
 
 ```text
 00_job-posting/job_description.md
@@ -820,9 +820,9 @@ jobagent add-job --text "..."
 00_job-posting/job_description.html
 ```
 
-[ ] Create `JobParserAgent`.
+[x] Create `JobParserAgent`.
 
-[ ] Extract:
+[x] Extract:
 
 ```text
 company
@@ -840,9 +840,9 @@ red_flags
 questions_to_answer
 ```
 
-[ ] Return strict JSON.
+[x] Return strict JSON.
 
-[ ] Save parsed output to:
+[x] Save parsed output to:
 
 ```text
 01_analysis/extracted_requirements.json
@@ -864,9 +864,9 @@ The user should not waste time applying to poor-fit jobs. The agent should expla
 
 ### Tasks
 
-[ ] Create `ScoringService`.
+[x] Create `ScoringService`.
 
-[ ] Use a transparent score:
+[x] Use a transparent score:
 
 ```text
 must_have_skill_match: 45%
@@ -877,7 +877,7 @@ location_remote_match: 5%
 salary_match: 5%
 ```
 
-[ ] Save result to:
+[x] Save result to:
 
 ```text
 01_analysis/fit_score.json
@@ -925,65 +925,65 @@ A tailored CV has better relevance, but the app must not invent skills or break 
 
 ### Tasks
 
-[ ] Create `CVTailorAgent`.
+[x] Create `CVTailorAgent`.
 
-[ ] Create `LatexService`.
+[x] Create `LatexService`.
 
-[ ] Read from:
+[x] Read from:
 
 ```text
 storage/master_cv/master_cv.tex
 ```
 
-[ ] Generate a tailoring strategy before editing.
+[x] Generate a tailoring strategy before editing.
 
-[ ] Save strategy to:
+[x] Save strategy to:
 
 ```text
 01_analysis/tailoring_strategy.md
 ```
 
-[ ] Allowed edits:
+[x] Allowed edits:
 
-[ ] Rewrite professional summary truthfully.
+[x] Rewrite professional summary truthfully.
 
-[ ] Reorder skills.
+[x] Reorder skills.
 
-[ ] Reorder bullets.
+[x] Reorder bullets.
 
-[ ] Emphasize existing relevant experience.
+[x] Emphasize existing relevant experience.
 
-[ ] Shorten irrelevant content.
+[x] Shorten irrelevant content.
 
-[ ] Add keywords only if supported by approved facts.
+[x] Add keywords only if supported by approved facts.
 
-[ ] Forbidden edits:
+[x] Forbidden edits:
 
-[ ] Invent companies.
+[x] Invent companies.
 
-[ ] Invent projects.
+[x] Invent projects.
 
-[ ] Invent years of experience.
+[x] Invent years of experience.
 
-[ ] Invent tools.
+[x] Invent tools.
 
-[ ] Invent education.
+[x] Invent education.
 
-[ ] Invent work authorization.
+[x] Invent work authorization.
 
-[ ] Output tailored LaTeX to:
+[x] Output tailored LaTeX to:
 
 ```text
 02_cv/cv_tailored.tex
 ```
 
-[ ] Compile PDF to:
+[x] Compile PDF to:
 
 ```text
 02_cv/cv_tailored.pdf
 ```
 
-[ ] Save LaTeX compile log to:
+[x] Save LaTeX compile log to:
 
 ```text
 02_cv/compile_log.txt
@@ -991,7 +991,7 @@ storage/master_cv/master_cv.tex
 
 [ ] If compilation fails, attempt safe syntax repair.
 
-[ ] Save human-readable diff to:
+[x] Save human-readable diff to:
 
 ```text
 02_cv/cv_diff.md
@@ -1040,17 +1040,17 @@ fit score
 tailored CV summary
 ```
 
-[ ] Generate concise cover letter.
+[x] Generate concise cover letter.
 
 [ ] Default length: 250–400 words.
 
-[ ] Make the tone professional, clear, and human.
+[x] Make the tone professional, clear, and human.
 
-[ ] Do not copy the CV line by line.
+[x] Do not copy the CV line by line.
 
-[ ] Do not invent company-specific facts unless present in job description or approved source.
+[x] Do not invent company-specific facts unless present in job description or approved source.
 
-[ ] Save Markdown to:
+[x] Save Markdown to:
 
 ```text
 03_cover-letter/cover_letter.md
@@ -1094,11 +1094,11 @@ Job applications often include repeated questions. The agent should answer them 
 
 ### Tasks
 
-[ ] Create `ApplicationAnswerAgent`.
+[x] Create `ApplicationAnswerAgent`.
 
-[ ] Create `QuestionClassifier`.
+[x] Create `QuestionClassifier`.
 
-[ ] Classify questions into types:
+[x] Classify questions into types:
 
 ```text
 why_this_role
@@ -1122,13 +1122,13 @@ unknown
 storage/profile/answer_bank.json
 ```
 
-[ ] Read approved facts from:
+[x] Read approved facts from:
 
 ```text
 storage/profile/facts.json
 ```
 
-[ ] Generate tailored answer using:
+[x] Generate tailored answer using:
 
 ```text
 question text
@@ -1155,7 +1155,7 @@ answer bank
 }
 ```
 
-[ ] Mark these as sensitive:
+[x] Mark these as sensitive:
 
 ```text
 work_authorisation
@@ -1170,15 +1170,15 @@ ethnicity
 references
 ```
 
-[ ] Save generated answers to:
+[x] Save generated answers to:
 
 ```text
 04_application/application_answers.generated.json
 ```
 
-[ ] Create approval workflow.
+[x] Create approval workflow.
 
-[ ] Approved answers should be saved to:
+[x] Approved answers should be saved to:
 
 ```text
 04_application/application_answers.approved.json
@@ -1186,7 +1186,7 @@ references
 
 [ ] The browser-assist service may only fill answers from the approved file.
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent answers JOB_ID
@@ -1206,7 +1206,7 @@ jobagent approve-answers JOB_ID
 
 [ ] "Tell us about yourself" answer uses profile facts.
 
-[ ] Sensitive answers require manual approval.
+[x] Sensitive answers require manual approval.
 
 [ ] Unsupported claims are detected.
 
@@ -1279,33 +1279,33 @@ The user should be able to run one command and get a complete reviewed applicati
 
 ### Tasks
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent prepare JOB_ID
 ```
 
-[ ] `prepare` should run:
+[x] `prepare` should run:
 
-[ ] Job parsing.
+[x] Job parsing.
 
-[ ] Fit scoring.
+[x] Fit scoring.
 
-[ ] Application folder creation.
+[x] Application folder creation.
 
-[ ] CV tailoring.
+[x] CV tailoring.
 
-[ ] LaTeX PDF compilation.
+[x] LaTeX PDF compilation.
 
-[ ] Cover letter generation.
+[x] Cover letter generation.
 
-[ ] Dynamic application answer generation.
+[x] Dynamic application answer generation.
 
 [ ] No-fabrication review.
 
-[ ] Metadata save.
+[x] Metadata save.
 
-[ ] Final package summary.
+[x] Final package summary.
 
 [ ] Final output should show:
 
@@ -1336,25 +1336,25 @@ Many jobs on LinkedIn and Indeed send the user to external platforms such as Gre
 
 ### Tasks
 
-[ ] Create `BrowserService`.
+[x] Create `BrowserService`.
 
-[ ] Create `ATSDetectorService`.
+[x] Create `ATSDetectorService`.
 
-[ ] Use Playwright in non-headless mode by default.
+[x] Use Playwright in non-headless mode by default.
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent apply-assist JOB_ID
 ```
 
-[ ] Start from `source_url`.
+[x] Start from `source_url`.
 
-[ ] Detect Apply button when possible.
+[x] Detect Apply button when possible.
 
 [ ] Handle user login manually.
 
-[ ] If redirected, save final URL to:
+[x] If redirected, save final URL to:
 
 ```text
 00_job-posting/final_application_url.txt
@@ -1370,14 +1370,14 @@ jobagent apply-assist JOB_ID
 }
 ```
 
-[ ] Save screenshots:
+[x] Save screenshots:
 
 ```text
 00_job-posting/screenshots/source_page.png
 00_job-posting/screenshots/destination_page.png
 ```
 
-[ ] Detect ATS platform by URL and page patterns:
+[x] Detect ATS platform by URL and page patterns:
 
 ```text
 greenhouse
@@ -1403,11 +1403,11 @@ Continue with supervised browser assist? yes/no
 
 [ ] Never bypass login.
 
-[ ] Never bypass CAPTCHA.
+[x] Never bypass CAPTCHA.
 
-[ ] Never bypass rate limits.
+[x] Never bypass rate limits.
 
-[ ] Never submit automatically.
+[x] Never submit automatically.
 
 [ ] Add tests for redirect handling.
 
@@ -1425,9 +1425,9 @@ The app should reduce repetitive typing while keeping the user in control of sen
 
 ### Tasks
 
-[ ] Create `FormFieldDetector`.
+[x] Create `FormFieldDetector`.
 
-[ ] Detect:
+[x] Detect:
 
 ```text
 input
@@ -1438,17 +1438,17 @@ checkbox
 file upload
 ```
 
-[ ] Extract labels.
+[x] Extract labels.
 
-[ ] Infer field purpose.
+[x] Infer field purpose.
 
-[ ] Save detected fields to:
+[x] Save detected fields to:
 
 ```text
 04_application/form_fields_detected.json
 ```
 
-[ ] Safe fields:
+[x] Safe fields:
 
 ```text
 name
@@ -1463,7 +1463,7 @@ cover letter upload
 non-sensitive text answer from approved answers
 ```
 
-[ ] Sensitive fields requiring review:
+[x] Sensitive fields requiring review:
 
 ```text
 salary
@@ -1478,7 +1478,7 @@ criminal history
 references
 ```
 
-[ ] Never auto-fill:
+[x] Never auto-fill:
 
 ```text
 captcha
@@ -1506,7 +1506,7 @@ multi-choice tests where answer depends on judgement
 03_cover-letter/cover_letter.pdf
 ```
 
-[ ] Stop before final submit.
+[x] Stop before final submit.
 
 [ ] Display:
 
@@ -1544,13 +1544,13 @@ The user needs to know what was sent, when, and when to follow up.
 
 ### Tasks
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent list
 ```
 
-[ ] Add filters:
+[x] Add filters:
 
 ```bash
 jobagent list --status prepared
@@ -1559,7 +1559,7 @@ jobagent list --date 2026-06-21
 jobagent list --company "Company Name"
 ```
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent status JOB_ID submitted
@@ -1571,19 +1571,19 @@ jobagent status JOB_ID submitted
 jobagent notes JOB_ID
 ```
 
-[ ] Add follow-up date calculation:
+[x] Add follow-up date calculation:
 
 ```text
 submitted_at + 5 business days
 ```
 
-[ ] Generate follow-up email to:
+[x] Generate follow-up email to:
 
 ```text
 05_follow-up/follow_up_email.md
 ```
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent followups
@@ -1609,9 +1609,9 @@ Each application package should become an interview prep asset.
 
 ### Tasks
 
-[ ] Create `InterviewPrepAgent`.
+[x] Create `InterviewPrepAgent`.
 
-[ ] Generate:
+[x] Generate:
 
 ```text
 company summary from job description
@@ -1625,13 +1625,13 @@ questions to ask recruiter
 salary discussion notes
 ```
 
-[ ] Save to:
+[x] Save to:
 
 ```text
 05_follow-up/interview_prep.md
 ```
 
-[ ] Add command:
+[x] Add command:
 
 ```bash
 jobagent interview-prep JOB_ID
@@ -1651,7 +1651,7 @@ The user should be able to audit what was generated, what was approved, and what
 
 ### Tasks
 
-[ ] Create `metadata.json` in each application folder.
+[x] Create `metadata.json` in each application folder.
 
 [ ] Include:
 
@@ -1684,25 +1684,25 @@ The user should be able to audit what was generated, what was approved, and what
 }
 ```
 
-[ ] Add an audit log file:
+[x] Add an audit log file:
 
 ```text
 audit_log.md
 ```
 
-[ ] Log:
+[x] Log:
 
-[ ] Job added.
+[x] Job added.
 
-[ ] CV generated.
+[x] CV generated.
 
-[ ] Cover letter generated.
+[x] Cover letter generated.
 
-[ ] Answers generated.
+[x] Answers generated.
 
-[ ] Answers approved.
+[x] Answers approved.
 
-[ ] Browser-assist started.
+[x] Browser-assist started.
 
 [ ] Redirect detected.
 
@@ -1710,7 +1710,7 @@ audit_log.md
 
 [ ] User confirmed submission.
 
-[ ] Status changed.
+[x] Status changed.
 
 ---
 
@@ -1753,11 +1753,11 @@ jobagent followups
 jobagent interview-prep JOB_ID
 ```
 
-[ ] Use Rich tables for output.
+[x] Use Rich tables for output.
 
-[ ] Use clear errors.
+[x] Use clear errors.
 
-[ ] Show next recommended command after each step.
+[x] Show next recommended command after each step.
 
 ---
 
@@ -1777,35 +1777,35 @@ Use FastAPI with simple Jinja2 templates first. A React/Next.js frontend can com
 
 ### Tasks
 
-[ ] Create FastAPI app.
+[x] Create FastAPI app.
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 GET /
 ```
 
-[ ] Dashboard should show:
+[x] Dashboard should show:
 
-[ ] Total jobs.
+[x] Total jobs.
 
-[ ] Applications prepared today.
+[x] Applications prepared today.
 
-[ ] Applications submitted today.
+[x] Applications submitted today.
 
-[ ] Applications needing review.
+[x] Applications needing review.
 
-[ ] Follow-ups due.
+[x] Follow-ups due.
 
-[ ] Recent applications.
+[x] Recent applications.
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 GET /applications
 ```
 
-[ ] Show application table with:
+[x] Show application table with:
 
 ```text
 date
@@ -1818,51 +1818,51 @@ source
 folder path
 ```
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 GET /applications/{id}
 ```
 
-[ ] Application detail page should show:
+[x] Application detail page should show:
 
-[ ] Job description.
+[x] Job description.
 
-[ ] Fit score.
+[x] Fit score.
 
-[ ] Extracted requirements.
+[x] Extracted requirements.
 
-[ ] Tailoring strategy.
+[x] Tailoring strategy.
 
 [ ] CV PDF link.
 
-[ ] Cover letter link.
+[x] Cover letter link.
 
-[ ] Generated answers.
+[x] Generated answers.
 
-[ ] Approved answers.
+[x] Approved answers.
 
 [ ] Browser-assist status.
 
 [ ] Screenshots.
 
-[ ] Metadata.
+[x] Metadata.
 
-[ ] Audit log.
+[x] Audit log.
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 POST /applications/{id}/approve-answers
 ```
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 POST /applications/{id}/prepare
 ```
 
-[ ] Add route:
+[x] Add route:
 
 ```text
 POST /applications/{id}/mark-submitted
@@ -1898,13 +1898,13 @@ GET /followups
 
 [ ] Open interview prep.
 
-[ ] Add a visual pipeline:
+[x] Add a visual pipeline:
 
 ```text
 Found → Analyzed → Prepared → Needs Review → Ready → Browser Assist → Submitted → Follow-up → Interview/Rejected/Offer
 ```
 
-[ ] Add status badges.
+[x] Add status badges.
 
 [ ] Add warning badges for:
 
@@ -1943,31 +1943,31 @@ The app handles important documents and should not silently generate wrong or un
 
 ### Tasks
 
-[ ] Add unit tests for folder creation.
+[x] Add unit tests for folder creation.
 
-[ ] Add unit tests for profile validation.
+[x] Add unit tests for profile validation.
 
-[ ] Add unit tests for job parsing.
+[x] Add unit tests for job parsing.
 
-[ ] Add unit tests for fit scoring.
+[x] Add unit tests for fit scoring.
 
-[ ] Add unit tests for model provider.
+[x] Add unit tests for model provider.
 
 [ ] Add unit tests for CV tailoring safety checks.
 
 [ ] Add unit tests for LaTeX compilation.
 
-[ ] Add unit tests for answer generation.
+[x] Add unit tests for answer generation.
 
-[ ] Add unit tests for sensitive field detection.
+[x] Add unit tests for sensitive field detection.
 
 [ ] Add unit tests for no-fabrication reviewer.
 
-[ ] Add integration tests for `prepare`.
+[x] Add integration tests for `prepare`.
 
 [ ] Add mocked browser tests for redirection.
 
-[ ] Add tests proving final submit is never clicked automatically.
+[x] Add tests proving final submit is never clicked automatically.
 
 ---
 

@@ -1,0 +1,30 @@
+[
+  {
+    "prompt_name": "job_parser.md",
+    "prompt_version": "job_parser.md:1781988366"
+  },
+  {
+    "prompt_name": "fit_score.md",
+    "prompt_version": "fit_score.md:1782020995"
+  },
+  {
+    "prompt_name": "application_planner.md",
+    "prompt_version": "application_planner.md:1781988367"
+  },
+  {
+    "prompt_name": "cv_tailor.md",
+    "prompt_version": "cv_tailor.md:1781988368"
+  },
+  {
+    "prompt_name": "cover_letter.md",
+    "prompt_version": "cover_letter.md:1781988370"
+  },
+  {
+    "prompt_name": "application_answers.md",
+    "prompt_version": "application_answers.md:1782020996"
+  },
+  {
+    "prompt_name": "no_fabrication_reviewer.md",
+    "prompt_version": "no_fabrication_reviewer.md:1782020998"
+  }
+]

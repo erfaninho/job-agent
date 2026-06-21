@@ -1,0 +1,28 @@
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Company</th>
+      <th>Role</th>
+      <th>Location</th>
+      <th>Fit</th>
+      <th>Status</th>
+      <th>Source</th>
+      <th>Folder</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for application, job in rows %}
+    <tr>
+      <td>{{ application.application_date.date() }}</td>
+      <td><a href="/dashboard/applications/{{ application.id }}">{{ job.company }}</a></td>
+      <td>{{ job.title }}</td>
+      <td>{{ job.location or job.remote_type or "" }}</td>
+      <td>{{ application.fit_score or "" }}</td>
+      <td><span class="badge">{{ application.status }}</span></td>
+      <td>{{ job.source }}</td>
+      <td>{{ application.folder_path }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

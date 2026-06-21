@@ -11,6 +11,8 @@ from sqlmodel import select
 from app.config import Settings, get_settings
 from app.logging_config import configure_logging
 from app.models.application import Application, Job
+from app.services.application_service import ApplicationService
+from app.services.browser_service import BrowserService
 from app.services.daily_summary_service import DailySummaryService
 from app.services.database import DatabaseService
 from app.services.job_input_service import JobInputService
@@ -216,6 +218,53 @@ def show(application_id: int) -> None:
             "cover_letter": application.cover_letter_path,
         }
     )
+
+
+@app.command("approve-answers")
+def approve_answers(application_id: int) -> None:
+    settings, database = services()
+    path = ApplicationService(settings, database).approve_answers(application_id)
+    console.print(f"Approved safe answers saved to {path}")
+
+
+@app.command("status")
+def status(application_id: int, new_status: str) -> None:
+    settings, database = services()
+    application = ApplicationService(settings, database).set_status(application_id, new_status)
+    console.print(f"Application {application.id} status set to {application.status}")
+
+
+@app.command("mark-submitted")
+def mark_submitted(application_id: int) -> None:
+    settings, database = services()
+    application = ApplicationService(settings, database).mark_submitted(application_id)
+    console.print(
+        f"Application {application.id} marked submitted. Follow-up date: {application.follow_up_date}"
+    )
+
+
+@app.command("follow-up-email")
+def follow_up_email(application_id: int) -> None:
+    settings, database = services()
+    path = ApplicationService(settings, database).create_follow_up_email(application_id)
+    console.print(f"Follow-up email written to {path}")
+
+
+@app.command("interview-prep")
+def interview_prep(application_id: int) -> None:
+    settings, database = services()
+    path = ApplicationService(settings, database).create_interview_prep(application_id)
+    console.print(f"Interview prep written to {path}")
+
+
+@app.command("apply-assist")
+def apply_assist(application_id: int) -> None:
+    settings, database = services()
+    summary = BrowserService(settings, database).apply_assist(application_id)
+    table = Table("Field", "Value")
+    for key, value in summary.items():
+        table.add_row(key, str(value))
+    console.print(table)
 
 
 @app.command("prepare")

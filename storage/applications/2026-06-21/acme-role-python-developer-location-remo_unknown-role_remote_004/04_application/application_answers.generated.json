@@ -1,0 +1,157 @@
+[
+  {
+    "question_label": "Why this role?",
+    "normalized_question_type": "why_this_role",
+    "answer": "I am interested in this role because it matches my approved background in my approved skills and experience and the responsibilities described in the job post.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": false,
+    "risk_notes": [],
+    "character_count": 159,
+    "word_count": 26,
+    "created_at": "2026-06-21T08:05:17.206013",
+    "auto_fill_allowed": true
+  },
+  {
+    "question_label": "Why this company?",
+    "normalized_question_type": "why_this_company",
+    "answer": "I am interested in Acme Role: Python Developer Location: Remote Required Python Django SQL because the role appears to offer practical product work where my approved experience can contribute. I do not want to invent company-specific details beyond the job post.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": false,
+    "risk_notes": [],
+    "character_count": 262,
+    "word_count": 41,
+    "created_at": "2026-06-21T08:05:17.206068",
+    "auto_fill_allowed": true
+  },
+  {
+    "question_label": "Tell us about yourself.",
+    "normalized_question_type": "tell_us_about_yourself",
+    "answer": "I am a software developer with experience reflected in my approved profile, including my approved skills and experience. I enjoy building reliable, user-focused systems and learning quickly.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": false,
+    "risk_notes": [],
+    "character_count": 190,
+    "word_count": 27,
+    "created_at": "2026-06-21T08:05:17.206095",
+    "auto_fill_allowed": true
+  },
+  {
+    "question_label": "What are your salary expectations?",
+    "normalized_question_type": "salary_expectation",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206119",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "What is your notice period?",
+    "normalized_question_type": "notice_period",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206140",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "Do you have the right to work?",
+    "normalized_question_type": "work_authorisation",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206160",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "Do you require visa sponsorship?",
+    "normalized_question_type": "visa_sponsorship",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206186",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "Are you willing to relocate?",
+    "normalized_question_type": "relocation",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206209",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "When can you start?",
+    "normalized_question_type": "availability",
+    "answer": "Suggested answer requires manual confirmation from the user before use.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": true,
+    "risk_notes": [
+      "Manual confirmation required for sensitive answer."
+    ],
+    "character_count": 71,
+    "word_count": 10,
+    "created_at": "2026-06-21T08:05:17.206250",
+    "auto_fill_allowed": false
+  },
+  {
+    "question_label": "Describe your experience with the relevant technical stack.",
+    "normalized_question_type": "technical_stack_question",
+    "answer": "My relevant technical background includes my approved skills and experience, where supported by my CV and approved profile.",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": false,
+    "risk_notes": [],
+    "character_count": 123,
+    "word_count": 18,
+    "created_at": "2026-06-21T08:05:17.206284",
+    "auto_fill_allowed": true
+  },
+  {
+    "question_label": "Portfolio/GitHub/LinkedIn links",
+    "normalized_question_type": "portfolio_link",
+    "answer": "LinkedIn:  GitHub:  Portfolio:",
+    "source_facts_used": [],
+    "confidence_score": 0.75,
+    "requires_user_review": false,
+    "risk_notes": [],
+    "character_count": 30,
+    "word_count": 3,
+    "created_at": "2026-06-21T08:05:17.206316",
+    "auto_fill_allowed": true
+  }
+]

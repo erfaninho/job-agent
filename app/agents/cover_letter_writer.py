@@ -1,10 +1,27 @@
 from app.models.job_parser import ParsedJob
 from app.models.profile import CandidateProfile
+from app.services.model_provider import ModelProvider, ModelProviderError
 from app.services.scoring_service import FitScore
 
 
 class CoverLetterWriterAgent:
+    def __init__(self, provider: ModelProvider | None = None):
+        self.provider = provider
+
     def write(self, parsed: ParsedJob, profile: CandidateProfile, fit: FitScore) -> str:
+        if self.provider is not None:
+            try:
+                return self.provider.generate_text(
+                    "Write a concise 250-400 word cover letter. Use only approved profile facts "
+                    "and job-post facts. Do not invent company facts.",
+                    (
+                        f"Parsed job:\n{parsed.model_dump_json()}\n\n"
+                        f"Profile:\n{profile.model_dump_json()}\n\n"
+                        f"Fit score:\n{fit.to_dict()}"
+                    ),
+                )
+            except ModelProviderError:
+                pass
         company = parsed.company or "your team"
         role = parsed.title or "this role"
         skills = ", ".join(fit.strong_matches[:5]) or ", ".join(profile.skills[:5])

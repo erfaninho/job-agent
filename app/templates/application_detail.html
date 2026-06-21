@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ job.company }} - {{ job.title }}</h1>
+<p><span class="badge">{{ application.status }}</span> Fit: {{ application.fit_score or "" }}</p>
+<p>Folder: {{ application.folder_path }}</p>
+<section>
+  <h2>Pipeline</h2>
+  <p>Found -> Analyzed -> Prepared -> Needs Review -> Ready -> Browser Assist -> Submitted -> Follow-up -> Interview/Rejected/Offer</p>
+</section>
+{% for name, body in previews.items() %}
+<section>
+  <h2>{{ name.replace("_", " ").title() }}</h2>
+  <pre>{{ body }}</pre>
+</section>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{
+  "application_id": null,
+  "job_id": 1,
+  "company": "Unknown company",
+  "title": "Unknown role",
+  "location": null,
+  "source": "manual",
+  "source_url": null,
+  "final_application_url": null,
+  "ats_platform": null,
+  "status": "found",
+  "fit_score": null,
+  "documents": {
+    "cv_tex": "",
+    "cv_pdf": "",
+    "cover_letter_md": "",
+    "cover_letter_pdf": "",
+    "answers_generated": "",
+    "answers_approved": "storage\\applications\\2026-06-21\\unknown-company_unknown-role_unspecified_003\\04_application\\application_answers.approved.json"
+  },
+  "manual_review_required": true,
+  "submitted": false,
+  "submitted_at": null,
+  "follow_up_date": null,
+  "created_at": "2026-06-21T08:03:26.436940"
+}

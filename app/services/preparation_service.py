@@ -6,7 +6,7 @@ from sqlmodel import select
 from app.agents.application_planner import ApplicationPlannerAgent
 from app.agents.cover_letter_writer import CoverLetterWriterAgent
 from app.agents.cv_tailor import CVTailorAgent
-from app.agents.form_answer_writer import build_generated_answer
+from app.agents.form_answer_writer import ApplicationAnswerAgent
 from app.agents.job_parser import JobParserAgent
 from app.agents.reviewer import ReviewerAgent
 from app.config import Settings
@@ -14,6 +14,7 @@ from app.models.application import Application, ApplicationStatus, GeneratedDocu
 from app.services.database import DatabaseService
 from app.services.folder_service import FolderService
 from app.services.latex_service import LatexService
+from app.services.model_provider import ModelProviderError, get_model_provider
 from app.services.prompt_loader import PromptLoader
 from app.services.scoring_service import ScoringService
 from app.services.storage_service import StorageService
@@ -29,9 +30,13 @@ class PreparationService:
     def prepare(self, job_id: int, no_cover_letter: bool = False, dry_run: bool = False) -> dict[str, object]:
         self.storage.require_master_cv()
         profile = self.storage.load_profile()
+        try:
+            provider = get_model_provider(self.settings)
+        except ModelProviderError:
+            provider = None
         with self.database.session() as session:
             job = session.exec(select(Job).where(Job.id == job_id)).one()
-        parsed = JobParserAgent().parse(job.description_text)
+        parsed = JobParserAgent(provider).parse(job.description_text)
         company = parsed.company or job.company
         title = parsed.title or job.title
         if dry_run:
@@ -90,7 +95,7 @@ class PreparationService:
         strategy = ApplicationPlannerAgent().plan(parsed, profile, fit)
         (folder / "01_analysis" / "tailoring_strategy.md").write_text(strategy, encoding="utf-8")
 
-        cv_path = CVTailorAgent().tailor(
+        cv_path = CVTailorAgent(provider).tailor(
             self.settings.master_cv_path, folder / "02_cv" / "cv_tailored.tex", parsed, profile
         )
         pdf_path = LatexService(self.settings.latex_compiler).compile(cv_path)
@@ -98,18 +103,13 @@ class PreparationService:
         if not no_cover_letter:
             cover_letter_path = folder / "03_cover-letter" / "cover_letter.md"
             cover_letter_path.write_text(
-                CoverLetterWriterAgent().write(parsed, profile, fit), encoding="utf-8"
+                CoverLetterWriterAgent(provider).write(parsed, profile, fit), encoding="utf-8"
             )
 
+        facts = self.storage.read_json(self.settings.facts_path).get("approved_facts", [])
         answers = [
-            build_generated_answer(
-                "Why this role?",
-                (
-                    f"I am interested in {title} because it aligns with my approved experience "
-                    f"and skills including {', '.join(fit.strong_matches[:4]) or 'the strengths in my CV'}."
-                ),
-                fit.strong_matches,
-            ).to_dict()
+            answer.to_dict()
+            for answer in ApplicationAnswerAgent(provider).generate_answers(parsed, profile, approved_facts=facts)
         ]
         answers_json = folder / "04_application" / "application_answers.generated.json"
         answers_json.write_text(json.dumps(answers, indent=2), encoding="utf-8")

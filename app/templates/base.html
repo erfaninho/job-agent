@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Job Agent</title>
+    <style>
+      body { font-family: Segoe UI, Arial, sans-serif; margin: 0; color: #1f2937; background: #f7f7f5; }
+      header { background: #20332f; color: white; padding: 16px 24px; }
+      nav a { color: white; margin-right: 16px; text-decoration: none; }
+      main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+      table { border-collapse: collapse; width: 100%; background: white; }
+      th, td { border-bottom: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; }
+      th { background: #e8ece7; }
+      .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+      .stat { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 16px; }
+      .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; background: #dbeafe; }
+      pre { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 12px; overflow: auto; }
+      section { margin-bottom: 24px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Dashboard</a>
+        <a href="/dashboard/applications">Applications</a>
+      </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+  </body>
+</html>

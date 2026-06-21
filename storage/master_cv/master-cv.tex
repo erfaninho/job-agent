@@ -1,0 +1,171 @@
+% !TEX program = pdflatex
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,left=1.45cm,right=1.45cm,top=0.95cm,bottom=1.05cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[default,light,condensed]{roboto}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{setspace}
+\usepackage{microtype}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\definecolor{awesome-red}{HTML}{DC352F}
+\definecolor{text-dark}{HTML}{333333}
+\definecolor{text-gray}{HTML}{666666}
+\definecolor{light-gray}{HTML}{999999}
+\definecolor{rule-gray}{HTML}{333333}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setstretch{1.12}
+\AtBeginDocument{\color{text-gray}}
+
+\newcommand{\namestyle}[1]{{\sffamily\fontseries{el}\selectfont\fontsize{32}{35}\selectfont\color{light-gray}#1}}
+\newcommand{\surname}[1]{{\sffamily\bfseries\fontsize{32}{35}\selectfont\color{text-dark}#1}}
+\newcommand{\subtitle}[1]{{\sffamily\bfseries\fontsize{6.8}{8}\selectfont\color{awesome-red}\MakeUppercase{#1}}}
+\newcommand{\locationheader}[1]{{\itshape\fontsize{9}{10.5}\selectfont\color{light-gray}#1}}
+\newcommand{\contactstyle}[1]{{\fontsize{7.8}{9.5}\selectfont\color{text-dark}#1}}
+
+\newcommand{\sectiontitle}[2]{%
+  \vspace{0.88em}%
+  \noindent\begin{tabularx}{\textwidth}{@{}l@{\hspace{0.45em}}X@{}}
+    {\sffamily\bfseries\fontsize{18.5}{22.5}\selectfont\textcolor{awesome-red}{#1}\textcolor{text-dark}{#2}} &
+    \raisebox{0.75ex}{\makebox[\linewidth]{\color{rule-gray}\leaders\hrule height 0.45pt\hfill\kern0pt}}\tabularnewline[-0.35em]
+  \end{tabularx}%
+  \vspace{0.24em}%
+}
+
+\newcommand{\entrytitle}[1]{{\sffamily\bfseries\fontsize{13.2}{16}\selectfont\color{text-dark}#1}}
+\newcommand{\entrystyle}[1]{{\sffamily\fontsize{10.2}{12.2}\selectfont\scshape\color{text-dark}#1}}
+\newcommand{\where}[1]{{\itshape\fontsize{9.2}{11}\selectfont\color{awesome-red}#1}}
+\newcommand{\when}[1]{{\itshape\fontsize{8.5}{10.2}\selectfont\color{light-gray}#1}}
+\newcommand{\bodytext}[1]{{\fontsize{10.8}{13.2}\selectfont\color{text-gray}#1}}
+
+\newenvironment{cvitems}{%
+  \begin{itemize}[leftmargin=1.15em,label={\fontsize{5.5}{5.5}\selectfont\textbullet},topsep=0.28em,itemsep=0.24em,parsep=0.05em,partopsep=0pt]
+    \fontsize{10}{12.4}\selectfont\color{text-gray}%
+}{\end{itemize}}
+
+\newcommand{\cventry}[5]{%
+  \noindent\begin{tabularx}{\textwidth}{@{}Xr@{}}
+    \entrytitle{#1} & \where{#2} \\
+    \entrystyle{#3} & \when{#4}
+  \end{tabularx}%
+  \vspace{-0.42em}%
+  #5%
+  \vspace{0.42em}%
+}
+
+\newcommand{\skillrow}[2]{%
+  \makebox[3.35cm][r]{\sffamily\bfseries\fontsize{10.2}{12.2}\selectfont\color{text-dark}#1}\hspace{0.55cm}%
+  \bodytext{#2}\par\vspace{0.34em}%
+}
+
+\newcommand{\certrow}[3]{%
+  \bodytext{#1}\hspace{0.65em}{\sffamily\bfseries\fontsize{9.1}{10.5}\selectfont\color{text-dark}#2}\bodytext{, #3}\par\vspace{0.22em}%
+}
+
+\begin{document}
+
+\begin{center}
+  \namestyle{Mohammad Erfan}\hspace{0.31em}\surname{Echresh}\\[-0.40em]
+  \subtitle{Python/Django Developer}\\[0.15em]
+  \locationheader{Birmingham, United Kingdom}\\[0.30em]
+  \contactstyle{%
+    \faMobile*\hspace{0.25em}\href{tel:+447514186571}{+44 7514 186571}
+    \hspace{1.0em}|\hspace{1.0em}\faEnvelope\hspace{0.25em}\href{mailto:erfan.hresh@gmail.com}{erfan.hresh@gmail.com}
+    \hspace{1.0em}|\hspace{1.0em}\faHome\hspace{0.25em}\href{https://Erfaninho.github.io}{Homepage}
+    \hspace{1.0em}|\hspace{1.0em}\faGithub\hspace{0.25em}\href{https://github.com/erfaninho}{GitHub}
+    \hspace{1.0em}|\hspace{1.0em}\faLinkedin\hspace{0.25em}\href{https://www.linkedin.com/in/mohammad-erfan-echresh-4b51a2263}{LinkedIn}%
+  }
+\end{center}
+
+\vspace{-0.15em}
+
+\sectiontitle{Pro}{file}
+\bodytext{Python/Django Developer with experience in back-end development, AI model design, and blockchain solutions. Skilled in building scalable web applications and decentralized platforms. Strong background in data science and computational neuroscience with proven success in freelance and team projects. Interests span Full-Stack Web Development, AI \& Machine Learning, Blockchain \& DApps, and Data Science.}
+
+\sectiontitle{Ski}{lls}
+
+\skillrow{Languages}{Python, C++, Dart, JavaScript, WordPress}
+\skillrow{Frameworks \& Tools}{Django, FastAPI, Flutter, Bootstrap, Pandas, RESTful API, Git, HTML/CSS, React.js}
+\skillrow{Expertise}{Full-Stack Development, AI Integration, Blockchain Development}
+
+\sectiontitle{Edu}{cation}
+
+\cventry{University of Birmingham}{Birmingham, UK}{MSc Cognitive Neuroimaging \& Data Science}{2024 - 2025}{%
+\begin{cvitems}
+  \item Specialization in Computational Neuroscience
+  \item Thesis: Virtual Reality \& Material Perception
+  \item Designed VR experiments in Unity to study human perception of material softness
+  \item Implemented interactive environments with haptic and visual feedback in the university's VR Lab
+  \item Applied data science methods to analyze behavioral and cognitive responses in perception tasks
+\end{cvitems}}
+
+\cventry{K.N. Toosi University of Technology}{Tehran, Iran}{BSc Electrical Engineering}{2019 - 2024}{%
+\begin{cvitems}
+  \item Specialization in Control Systems
+  \item Thesis: Decentralized Application for Secure Medical Data Transfer
+  \item Built a decentralized application (DApp) on Ethereum blockchain to secure medical IoT data transfer
+  \item Developed protocols ensuring data privacy, integrity, and scalability in healthcare communication
+  \item Conducted research bridging blockchain with real-world medical systems
+\end{cvitems}}
+
+\newpage
+
+\sectiontitle{Work}{Experience}
+
+\cventry{Motion Dynamics}{Birmingham, UK}{Front-End Developer}{Sep 2025 - Present}{%
+\begin{cvitems}
+  \item Developed an interactive React.js front-end application to visualize analytical JSON data using dynamic charts and tooltips
+  \item Integrated multiple chart types to clearly present complex data insights, enhancing user interpretation and decision-making
+  \item Implemented a 3D human body model synchronized with chart data to visualize physical states and transitions in real time
+  \item Designed a responsive and modular UI, ensuring smooth rendering and performance across devices
+  \item Collaborated with backend and data teams to ensure accurate, real-time data mapping between API responses and visual components
+\end{cvitems}}
+
+\cventry{E-Commerce Platform}{Tehran, Iran (Remote)}{Freelance Full-Stack Developer}{Dec 2024 - Oct 2025}{%
+\begin{cvitems}
+  \item Designed and built a scalable e-commerce platform with Django back end, responsive Bootstrap front end, and PostgreSQL database
+  \item Implemented product management, customer accounts, and order tracking features to streamline sales operations
+  \item Integrated secure payment gateways and responsive layouts, contributing to a 20\% increase in sales
+\end{cvitems}}
+
+\cventry{MGC RZ Company}{Tehran, Iran}{Python Back-End Developer}{Feb 2024 - Jun 2024}{%
+\begin{cvitems}
+  \item Developed and deployed scalable modules for NFT marketplace and subscription-based e-commerce platform
+  \item Built seller dashboards, order tracking, and MFA authentication via email and SMS for secure user access
+  \item Enhanced user experience by integrating AI-driven image generation with Stable Diffusion
+\end{cvitems}}
+
+\cventry{Butterfly Nail Club}{London, UK (Remote)}{Freelance Full-Stack Developer}{Dec 2023 - Apr 2024}{%
+\begin{cvitems}
+  \item Built a web-based reservation system using Django, REST APIs, and Bootstrap
+  \item Developed booking models, worker scheduling, and automated time-release cron jobs
+  \item Improved booking efficiency and cut scheduling time by 50\% while reducing errors
+\end{cvitems}}
+
+\cventry{Saman Ab Imen}{Ahvaz / Tehran, Iran (Hybrid)}{Python Full-Stack Developer}{Sep 2022 - Jan 2024}{%
+\begin{cvitems}
+  \item Developed a full intranet-based automation system using Python with multi-level access control for managers and staff
+  \item Designed and implemented a company website with real-time task tracking, employee activity logging, and service presentation
+  \item Built responsive front-end using HTML/CSS and integrated with Django back-end for seamless user experience
+  \item Automated task registration and monitoring, improving internal workflow visibility and reducing manual reporting time
+\end{cvitems}}
+
+\sectiontitle{Cert}{ifications}
+
+\certrow{Sep 2023}{Python Web Development with Django}{Tehran Institute of Technology}
+\certrow{Apr 2023}{Programming with Python}{Tehran Institute of Technology}
+
+\end{document}

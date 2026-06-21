@@ -1,6 +1,7 @@
 import re
 
 from app.models.job_parser import ParsedJob
+from app.services.model_provider import ModelProvider, ModelProviderError
 
 
 KNOWN_SKILLS = [
@@ -25,7 +26,29 @@ KNOWN_SKILLS = [
 
 
 class JobParserAgent:
+    def __init__(self, provider: ModelProvider | None = None):
+        self.provider = provider
+
     def parse(self, description: str) -> ParsedJob:
+        if self.provider is not None:
+            try:
+                return self._parse_with_model(description)
+            except (ModelProviderError, ValueError, TypeError):
+                pass
+        return self._parse_with_rules(description)
+
+    def _parse_with_model(self, description: str) -> ParsedJob:
+        if self.provider is None:
+            raise ModelProviderError("No model provider configured.")
+        schema = ParsedJob.model_json_schema()
+        data = self.provider.generate_json(
+            "Extract job details as strict JSON. Use null for unknown fields. Do not invent data.",
+            description,
+            schema,
+        )
+        return ParsedJob.model_validate(data)
+
+    def _parse_with_rules(self, description: str) -> ParsedJob:
         lines = [line.strip() for line in description.splitlines() if line.strip()]
         text = " ".join(lines) if lines else description
         company = self._match_field(description, ("company", "organisation", "organization"))
