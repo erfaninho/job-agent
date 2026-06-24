@@ -31,19 +31,20 @@ class BrowserService:
         input_func: Callable[[str], str] = input,
     ) -> dict[str, object]:
         application, job = self._load(application_id)
-        if not job.source_url:
-            raise ValueError("Job has no source_url to open.")
         folder = Path(application.folder_path)
+        metadata_path = folder / "metadata.json"
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
+        source_url = job.source_url or str(metadata.get("source_url") or "")
+        if not source_url:
+            raise ValueError("Job has no source_url to open.")
         auth = AuthSessionService(self.settings)
-        source_site = detect_source_site(job.source_url)
+        source_site = detect_source_site(source_url)
         auth_state_path = auth.get_auth_state_path(source_site)
         if source_site in {"linkedin", "indeed"} and not auth_state_path.exists():
             raise RuntimeError(
                 f"No saved auth session found for {source_site}.\n"
                 f"Run:\npixi run jobagent auth login {source_site}\nThen retry apply-assist."
             )
-        metadata_path = folder / "metadata.json"
-        metadata = json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
         metadata.update(
             {
                 "auth_site": source_site,
@@ -64,7 +65,7 @@ class BrowserService:
             page = context.new_page()
             if auth_state_path.exists():
                 FolderService.append_audit_log(folder, "Auth session loaded.")
-            page.goto(job.source_url, wait_until="domcontentloaded")
+            page.goto(source_url, wait_until="domcontentloaded")
             if source_site in {"linkedin", "indeed"} and not auth_state_path.exists():
                 input_func("Log in manually if needed, then press Enter to continue.")
             FolderService.append_audit_log(folder, "Source page opened.")
@@ -73,7 +74,7 @@ class BrowserService:
             if input_func("Click detected Apply button if safe? yes/no: ").strip().lower() in {"y", "yes"}:
                 self._try_follow_apply_redirect(page)
             final_url = page.url
-            if final_url != job.source_url:
+            if final_url != source_url:
                 FolderService.append_audit_log(folder, "Apply redirection detected.")
             destination_shot = folder / "00_job-posting" / "screenshots" / "destination_page.png"
             page.screenshot(path=str(destination_shot), full_page=True)
@@ -111,7 +112,7 @@ class BrowserService:
             FolderService.append_audit_log(folder, "ATS platform detected.")
             metadata.update(
                 {
-                    "source_url": job.source_url,
+                    "source_url": source_url,
                     "final_application_url": final_url,
                     "ats_platform": ats,
                     "browser_assist_completed_at": self._now(),
@@ -164,7 +165,7 @@ class BrowserService:
             session.commit()
         self.database.add_event(application_id, "browser_assist_started", final_url)
         return {
-            "source_url": job.source_url,
+            "source_url": source_url,
             "final_application_url": final_url,
             "ats_platform": ats,
             "detected_fields": len(fields),

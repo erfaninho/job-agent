@@ -54,6 +54,11 @@ class FolderService:
         (folder / "00_job-posting" / "source_url.txt").write_text(
             job.source_url or "", encoding="utf-8"
         )
+        if not job.source_url:
+            self.append_audit_log(
+                folder,
+                "Warning: source_url missing. Browser assist cannot open the original job page.",
+            )
         (folder / "00_job-posting" / "final_application_url.txt").write_text(
             job.final_application_url or "", encoding="utf-8"
         )

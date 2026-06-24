@@ -26,3 +26,10 @@ def detect_source_site(url: str) -> str:
     if "bamboohr.com" in hostname:
         return "bamboohr"
     return "default"
+
+
+def infer_source_from_url(url: str | None) -> str:
+    if not url:
+        return "unknown"
+    detected = detect_source_site(url)
+    return "unknown" if detected == "default" else detected

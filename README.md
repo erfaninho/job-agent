@@ -64,14 +64,41 @@ Session files are stored under `storage/auth/` and browser profiles under `stora
 ## Application Workflow
 
 ```bash
-pixi run jobagent add-job --file ./job.txt
+pixi run jobagent add-job --file ./job_indeed_cgi_software_engineers.txt --source-url "https://uk.indeed.com/viewjob?jk=51baa25edf955295&from=shareddesktop_copy" --source indeed
 pixi run jobagent jobs
 pixi run jobagent prepare JOB_ID
+pixi run jobagent list
 pixi run jobagent approve-answers APPLICATION_ID
+pixi run jobagent auth login indeed
+pixi run jobagent auth status
 pixi run jobagent apply-assist APPLICATION_ID
 ```
 
 Browser assist opens a supervised browser, reuses saved auth state where available, follows Apply redirects when possible, detects ATS/form fields, and stops before final submission. You must review and submit manually.
+
+When importing from a local text file, `--source-url` is required for browser assist unless the file contains a source URL header. The app can read these headers automatically:
+
+```text
+Source: Indeed
+
+Source URL:
+https://uk.indeed.com/viewjob?jk=51baa25edf955295&from=shareddesktop_copy
+
+Company:
+CGI
+
+Role:
+Software Engineers / Software Developer
+
+Location:
+United Kingdom
+```
+
+You can fix older jobs without editing SQLite:
+
+```bash
+pixi run jobagent set-source-url JOB_ID "https://uk.indeed.com/viewjob?jk=..." --source indeed
+```
 
 Useful tracking commands:
 

@@ -205,18 +205,24 @@ def add_job(
     file: Path | None = typer.Option(None, "--file"),
     text: str | None = typer.Option(None, "--text"),
     url: str | None = typer.Option(None, "--url"),
+    source_url: str | None = typer.Option(None, "--source-url"),
+    source: str | None = typer.Option(None, "--source"),
 ) -> None:
     _, database = services()
     service = JobInputService(database)
     if file:
-        job = service.add_from_file(file)
+        job = service.add_from_file(file, source_url=source_url, source=source)
     elif text:
-        job = service.add_from_text(text)
+        job = service.add_from_text(text, source_url=source_url, source=source)
     elif url:
         job = service.add_from_url(url)
     else:
         raise typer.BadParameter("Provide --file, --text, or --url.")
     console.print(f"Job {job.id}: {job.company} - {job.title}")
+    if not job.source_url:
+        console.print(
+            "Warning: Job added without source_url. Browser assist will not work until a source URL is added."
+        )
     console.print(f"Next: pixi run jobagent prepare {job.id}")
 
 
@@ -245,7 +251,7 @@ def jobs(
             job.company,
             job.title,
             job.source,
-            job.source_url or "",
+            _truncate_url(job.source_url),
             job.status,
             job.created_at.isoformat(),
             "yes" if prepared else "no",
@@ -272,6 +278,28 @@ def job_detail(job_id: int) -> None:
             "application_id": application.id if application else None,
         }
     )
+    if not job.source_url:
+        console.print("Warning: this job has no source_url. apply-assist cannot open the job page.")
+    console.print(f"Next: pixi run jobagent prepare {job_id}")
+
+
+@app.command("set-source-url")
+def set_source_url(
+    job_id: int,
+    source_url: str,
+    source: str | None = typer.Option(None, "--source"),
+) -> None:
+    _, database = services()
+    job = JobInputService(database).set_source_url(job_id, source_url, source)
+    console.print(f"Updated Job {job.id} source_url.")
+    console.print(f"Source: {job.source}")
+    console.print(f"Next: pixi run jobagent prepare {job.id}")
+
+
+def _truncate_url(url: str | None, max_length: int = 72) -> str:
+    if not url:
+        return ""
+    return url if len(url) <= max_length else url[: max_length - 3] + "..."
 
 
 @app.command("list")
