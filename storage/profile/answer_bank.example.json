@@ -1,0 +1,22 @@
+{
+  "why_this_role": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "why_this_company": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "tell_us_about_yourself": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": false
+  },
+  "salary_expectation": {
+    "base_answer": "",
+    "can_be_tailored": true,
+    "requires_manual_confirmation": true
+  }
+}

@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import date
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
@@ -35,17 +36,27 @@ def app_rows() -> list[tuple[Application, Job]]:
         ]
 
 
-@api.get("/", response_class=HTMLResponse)
-def dashboard(request: Request) -> HTMLResponse:
-    rows = app_rows()
-    today = sum(1 for app, _ in rows if app.application_date.date().isoformat())
-    stats = {
+def dashboard_stats(rows: list[tuple[Application, Job]]) -> dict[str, int]:
+    today = date.today()
+    return {
         "total_jobs": len(rows),
-        "prepared_today": today,
-        "submitted_today": sum(1 for app, _ in rows if app.status == "submitted"),
+        "prepared_today": sum(
+            1
+            for app, _ in rows
+            if app.application_date is not None and app.application_date.date() == today
+        ),
+        "submitted_today": sum(
+            1 for app, _ in rows if app.submitted_at is not None and app.submitted_at.date() == today
+        ),
         "needs_review": sum(1 for app, _ in rows if app.status == "needs_review"),
         "followups_due": sum(1 for app, _ in rows if app.status == "follow_up_needed"),
     }
+
+
+@api.get("/", response_class=HTMLResponse)
+def dashboard(request: Request) -> HTMLResponse:
+    rows = app_rows()
+    stats = dashboard_stats(rows)
     return templates.TemplateResponse(
         request,
         "dashboard.html",

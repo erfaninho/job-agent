@@ -1,0 +1,109 @@
+Source: Indeed
+
+Source URL:
+https://uk.indeed.com/viewjob?jk=51baa25edf955295&from=shareddesktop_copy
+
+Company:
+CGI
+
+Role:
+Software Engineers / Software Developer
+
+Location:
+United Kingdom
+
+Available locations:
+Gloucester, London, Manchester
+
+Job type:
+Permanent, Full-time
+
+Benefits:
+Company pension
+Private healthcare
+Share scheme with 3.5% + 3.5% matching
+Competitive salary
+
+Important requirement:
+Due to the secure nature of the programme, candidates need to hold UK Security Clearance or be eligible to go through this clearance.
+
+Full job description:
+
+At CGI, we help shape the future of the UK’s most critical industries by delivering secure, mission-driven solutions that make a real-world impact. As a Software Developer, you will play a central role in creating and enhancing complex systems that keep the nation safe, while working in a culture that encourages innovation, ownership, and collaboration.
+
+This role offers the opportunity to work on high-profile projects, solve challenging problems, and contribute to initiatives that define industry transformation.
+
+CGI was recognised in the Sunday Times Best Places to Work List 2025 and has been named a UK Best Employer by the Financial Times. CGI offers a competitive salary, excellent pension, private healthcare, plus a share scheme with 3.5% + 3.5% matching, which makes employees CGI Partners rather than only employees.
+
+CGI is committed to inclusivity, building a diverse community of tech talent, inspiring people to pursue careers in the sector, including the Armed Forces, and holds a Gold Award in recognition of support of the Armed Forces Corporate Covenant.
+
+The company offers an open, friendly community of experts, training, and support to help employees take their careers where they want them to go.
+
+Your future duties and responsibilities:
+
+In this role, you will design, develop, and deliver software solutions for mission-critical projects, taking ownership of technical challenges and contributing to the full development lifecycle.
+
+You will have the opportunity to innovate, enhance deployment environments, and provide support for live systems, ensuring the solutions deliver lasting value for clients.
+
+You will collaborate with a cross-functional team, working closely with stakeholders to understand requirements and deliver practical, high-quality solutions. A problem-solving mindset and adaptability are key in supporting both new capabilities and the evolution of existing platforms.
+
+Key responsibilities:
+
+* Design and develop secure, scalable software solutions across the full lifecycle.
+* Configure, implement, and improve existing platforms.
+* Maintain deployment environments and assist with live system changes.
+* Work with clients and colleagues to define and assure integrated solutions.
+* Expand skills across technologies while contributing to a culture of knowledge sharing.
+
+Required qualifications and experience:
+
+Candidates should bring proven software development expertise and a willingness to work across multiple technologies. A positive, adaptable approach and strong problem-solving skills are essential.
+
+Experience in some of the following:
+
+* Java
+* Python
+* Rust
+
+Desirable skills:
+
+Frontend:
+
+* Vue.js
+
+Scripting and automation:
+
+* Bash
+* Ansible
+
+DevOps and CI/CD:
+
+* Jenkins
+* GitLab CI/CD
+* Terraform
+
+Cloud and infrastructure:
+
+* AWS
+
+Additional notes:
+
+Experience across multiple areas is desirable. A willingness to learn and contribute across the stack is key.
+
+Company culture:
+
+Life at CGI is rooted in ownership, teamwork, respect, and belonging. Employees are invited to be owners from day one and are called CGI Partners. CGI focuses on building innovative solutions, relationships with teammates and clients, global capabilities, new opportunities, and broad industry and technology expertise.
+
+CGI is one of the largest IT and business consulting services firms in the world.
+
+Application questions to prepare:
+
+* Why this role?
+* Why CGI?
+* Tell us about yourself.
+* Describe your software development experience.
+* Describe your Python experience.
+* Are you eligible for UK Security Clearance?
+* Are you willing to work in Gloucester, London, or Manchester?
+* What are your salary expectations?
+* What is your notice period or availability?

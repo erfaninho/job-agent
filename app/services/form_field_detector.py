@@ -1,8 +1,16 @@
 from dataclasses import asdict, dataclass
+from enum import StrEnum
 
 from bs4 import BeautifulSoup
 
 from app.agents.form_answer_writer import SENSITIVE_TYPES, classify_application_question
+
+
+class FieldSafety(StrEnum):
+    SAFE = "safe"
+    SENSITIVE = "sensitive"
+    BLOCKED = "blocked"
+    UNKNOWN = "unknown"
 
 
 @dataclass
@@ -13,6 +21,7 @@ class DetectedFormField:
     name: str
     safe_to_fill: bool
     sensitive: bool
+    safety: str = FieldSafety.UNKNOWN.value
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -28,12 +37,9 @@ class FormFieldDetector:
             label = self._label_for(soup, element)
             name = element.get("name") or element.get("id") or ""
             text = f"{label} {name} {input_type}"
-            question_type = classify_application_question(text)
-            sensitive = question_type in SENSITIVE_TYPES or any(
-                term in text.lower()
-                for term in ("captcha", "assessment", "test", "gender", "ethnicity", "disability")
-            )
-            safe = (not sensitive) and input_type.lower() not in {"submit", "button", "hidden"}
+            safety = self.classify_field_safety(text, input_type)
+            sensitive = safety == FieldSafety.SENSITIVE
+            safe = safety == FieldSafety.SAFE
             fields.append(
                 DetectedFormField(
                     tag=tag,
@@ -42,9 +48,72 @@ class FormFieldDetector:
                     name=str(name),
                     safe_to_fill=safe,
                     sensitive=sensitive,
+                    safety=safety.value,
                 )
             )
         return fields
+
+    @staticmethod
+    def classify_field_safety(label_or_name: str, input_type: str = "") -> FieldSafety:
+        text = f"{label_or_name} {input_type}".lower()
+        if any(
+            term in text
+            for term in (
+                "captcha",
+                "assessment",
+                "coding test",
+                "technical test",
+                "personality",
+                "submit",
+                "criminal",
+                "disability",
+                "gender",
+                "ethnicity",
+                "reference",
+            )
+        ):
+            return FieldSafety.BLOCKED
+        question_type = classify_application_question(text)
+        if question_type in SENSITIVE_TYPES or any(
+            term in text
+            for term in (
+                "salary",
+                "notice",
+                "right to work",
+                "work author",
+                "visa",
+                "sponsor",
+                "relocat",
+            )
+        ):
+            return FieldSafety.SENSITIVE
+        if any(
+            term in text
+            for term in (
+                "first name",
+                "last name",
+                "full name",
+                "name",
+                "email",
+                "phone",
+                "location",
+                "city",
+                "country",
+                "linkedin",
+                "github",
+                "portfolio",
+                "website",
+                "resume",
+                "cv",
+                "cover letter",
+            )
+        ):
+            return FieldSafety.SAFE
+        if input_type.lower() in {"submit", "button", "hidden", "password"}:
+            return FieldSafety.BLOCKED
+        if input_type.lower() in {"text", "email", "tel", "url", "textarea", "file"}:
+            return FieldSafety.SAFE
+        return FieldSafety.UNKNOWN
 
     @staticmethod
     def _label_for(soup: BeautifulSoup, element: object) -> str:

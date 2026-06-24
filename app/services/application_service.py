@@ -18,20 +18,64 @@ class ApplicationService:
         self.settings = settings
         self.database = database
 
-    def approve_answers(self, application_id: int) -> Path:
+    def approve_answers(
+        self,
+        application_id: int,
+        decisions: dict[str, str] | None = None,
+        edits: dict[str, str] | None = None,
+    ) -> Path:
         application = self.get_application(application_id)
         folder = Path(application.folder_path)
         generated_path = folder / "04_application" / "application_answers.generated.json"
         approved_path = folder / "04_application" / "application_answers.approved.json"
         generated = json.loads(generated_path.read_text(encoding="utf-8"))
-        safe_answers = [
-            answer
-            for answer in generated
-            if not answer.get("requires_user_review") and answer.get("auto_fill_allowed")
-        ]
-        approved_path.write_text(json.dumps(safe_answers, indent=2), encoding="utf-8")
+        approved = self.review_generated_answers(generated, decisions or {}, edits or {})
+        approved_path.write_text(json.dumps(approved, indent=2), encoding="utf-8")
+        review_path = folder / "04_application" / "submission_review.md"
+        existing_review = review_path.read_text(encoding="utf-8") if review_path.exists() else ""
+        review_path.write_text(
+            existing_review
+            + "\n\n## Answer Approval\n\n"
+            + f"Approved answers: {len(approved)}\n"
+            + f"Pending/rejected answers: {max(len(generated) - len(approved), 0)}\n",
+            encoding="utf-8",
+        )
         self.database.add_event(application_id, "answers_approved", str(approved_path))
         return approved_path
+
+    @staticmethod
+    def review_generated_answers(
+        generated: list[dict[str, object]],
+        decisions: dict[str, str],
+        edits: dict[str, str],
+    ) -> list[dict[str, object]]:
+        approved: list[dict[str, object]] = []
+        for index, answer in enumerate(generated):
+            key = str(answer.get("question_label") or index)
+            decision = decisions.get(key, "approve" if not answer.get("requires_user_review") else "skip")
+            normalized = decision.lower()[:1]
+            edited_answer = edits.get(key)
+            unsupported_claims = answer.get("unsupported_claims") or answer.get("risk_notes") or []
+            sensitive = bool(answer.get("requires_user_review"))
+            if normalized == "q":
+                break
+            if normalized in {"r", "s"}:
+                continue
+            if sensitive and normalized != "a":
+                continue
+            if unsupported_claims and not edited_answer:
+                continue
+            if normalized in {"a", "e"}:
+                approved_answer = dict(answer)
+                if edited_answer:
+                    approved_answer["answer"] = edited_answer
+                    approved_answer["character_count"] = len(edited_answer)
+                    approved_answer["word_count"] = len(edited_answer.split())
+                    approved_answer["requires_user_review"] = False
+                    approved_answer["auto_fill_allowed"] = True
+                if not approved_answer.get("requires_user_review"):
+                    approved.append(approved_answer)
+        return approved
 
     def set_status(self, application_id: int, status: str) -> Application:
         valid = {item.value for item in ApplicationStatus}

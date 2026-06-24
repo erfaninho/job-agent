@@ -38,6 +38,30 @@ class Settings(BaseSettings):
     applications_dir: Path | None = Field(default=None, validation_alias="APPLICATIONS_DIR")
     profile_dir: Path | None = Field(default=None, validation_alias="PROFILE_DIR")
     master_cv_dir: Path | None = Field(default=None, validation_alias="MASTER_CV_DIR")
+    auth_dir: Path = Field(default=Path("storage/auth"), validation_alias="AUTH_DIR")
+    browser_profiles_dir: Path = Field(
+        default=Path("storage/browser_profiles"), validation_alias="BROWSER_PROFILES_DIR"
+    )
+    linkedin_auth_state: Path = Field(
+        default=Path("storage/auth/linkedin_storage_state.json"),
+        validation_alias="LINKEDIN_AUTH_STATE",
+    )
+    indeed_auth_state: Path = Field(
+        default=Path("storage/auth/indeed_storage_state.json"),
+        validation_alias="INDEED_AUTH_STATE",
+    )
+    linkedin_browser_profile: Path = Field(
+        default=Path("storage/browser_profiles/linkedin"),
+        validation_alias="LINKEDIN_BROWSER_PROFILE",
+    )
+    indeed_browser_profile: Path = Field(
+        default=Path("storage/browser_profiles/indeed"),
+        validation_alias="INDEED_BROWSER_PROFILE",
+    )
+    default_browser_profile: Path = Field(
+        default=Path("storage/browser_profiles/default"),
+        validation_alias="DEFAULT_BROWSER_PROFILE",
+    )
 
     @property
     def master_cv_path(self) -> Path:
@@ -115,6 +139,11 @@ class Settings(BaseSettings):
             self.master_cv_base_path / "assets" / "icons",
             self.master_cv_base_path / "assets" / "fonts",
             self.logs_path,
+            self.auth_dir,
+            self.browser_profiles_dir,
+            self.linkedin_browser_profile,
+            self.indeed_browser_profile,
+            self.default_browser_profile,
         ]
 
     def validate_model_settings(self) -> list[str]:

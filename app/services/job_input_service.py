@@ -5,6 +5,7 @@ from urllib.request import Request, urlopen
 
 from sqlmodel import select
 
+from app.agents.job_parser import JobParserAgent
 from app.models.application import Job
 from app.services.database import DatabaseService
 
@@ -32,7 +33,17 @@ class JobInputService:
         duplicate = self.database.find_duplicate_job(digest, source_url)
         if duplicate:
             return duplicate
-        job = Job(description_text=normalized, description_hash=digest, source=source, source_url=source_url)
+        parsed = JobParserAgent().parse(text)
+        job = Job(
+            company=parsed.company or "Unknown company",
+            title=parsed.title or "Unknown role",
+            location=parsed.location,
+            remote_type=parsed.remote_type,
+            description_text=normalized,
+            description_hash=digest,
+            source=source,
+            source_url=source_url,
+        )
         with self.database.session() as session:
             session.add(job)
             session.commit()

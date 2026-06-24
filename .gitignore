@@ -2,3 +2,42 @@
 .pixi/*
 !.pixi/config.toml
 .env
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local private storage
+storage/auth/
+storage/browser_profiles/
+storage/logs/
+storage/job_agent.db
+storage/applications/
+
+# Sensitive profile data
+storage/profile/sensitive_answers.json
+storage/profile/profile.json
+storage/profile/facts.json
+storage/profile/answer_bank.json
+storage/profile/preferences.json
+storage/profile/links.json
+storage/profile/documents.json
+
+# Real CV files
+storage/master_cv/master_cv.tex
+storage/master_cv/master_cv.pdf
+storage/master_cv/assets/
+storage/master_cv/*.aux
+storage/master_cv/*.log
+storage/master_cv/*.out
+storage/master_cv/*.synctex.gz
+
+# Keep examples/placeholders only
+!storage/profile/*.example.json
+!storage/master_cv/.gitkeep
+!storage/profile/.gitkeep
+!storage/applications/.gitkeep
+!storage/logs/.gitkeep

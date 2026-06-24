@@ -1,5 +1,6 @@
 import shutil
 import sys
+import json
 from datetime import date, datetime
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from app.config import Settings, get_settings
 from app.logging_config import configure_logging
 from app.models.application import Application, Job
 from app.services.application_service import ApplicationService
+from app.services.auth_session_service import AuthSessionService
 from app.services.browser_service import BrowserService
 from app.services.daily_summary_service import DailySummaryService
 from app.services.database import DatabaseService
@@ -22,8 +24,10 @@ from app.services.storage_service import StorageService
 app = typer.Typer(help="Local supervised job application manager.")
 profile_app = typer.Typer(help="Candidate profile commands.")
 db_app = typer.Typer(help="Database commands.")
+auth_app = typer.Typer(help="Authentication session commands.")
 app.add_typer(profile_app, name="profile")
 app.add_typer(db_app, name="db")
+app.add_typer(auth_app, name="auth")
 console = Console()
 
 
@@ -70,12 +74,19 @@ def doctor() -> None:
         try:
             import httpx
 
-            response = httpx.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags", timeout=2)
-            table.add_row(
-                "Ollama", "ok" if response.status_code == 200 else "error", settings.ollama_base_url
-            )
+            response = httpx.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags", timeout=10)
+            if response.status_code == 200:
+                models = response.json().get("models", [])
+                names = {str(model.get("name", "")) for model in models if isinstance(model, dict)}
+                model_found = any(settings.ollama_model in name for name in names)
+                detail = settings.ollama_base_url
+                if not model_found:
+                    detail = f"Install the default model: ollama pull {settings.ollama_model}"
+                table.add_row("Ollama", "ok" if model_found else "warning", detail)
+            else:
+                table.add_row("Ollama", "error", "Ollama is not responding. Start it with: ollama serve")
         except Exception as exc:
-            table.add_row("Ollama", "warning", str(exc))
+            table.add_row("Ollama", "warning", f"Ollama is not responding. Start it with: ollama serve ({exc})")
     try:
         from playwright.sync_api import sync_playwright
 
@@ -84,11 +95,61 @@ def doctor() -> None:
         table.add_row(
             "Playwright browser",
             "ok" if chromium_path.exists() else "missing",
-            str(chromium_path),
+            str(chromium_path)
+            if chromium_path.exists()
+            else "Install Chromium: pixi run python -m playwright install chromium",
         )
     except Exception as exc:
         table.add_row("Playwright browser", "warning", str(exc))
+    auth = AuthSessionService(settings)
+    for site in ("indeed", "linkedin"):
+        status = auth.auth_status(site)
+        table.add_row(
+            f"Auth {site}",
+            "ok" if status["auth_state_exists"] else "warning",
+            str(status["auth_state_path"]),
+        )
     console.print(table)
+
+
+@auth_app.command("login")
+def auth_login(site: str) -> None:
+    settings, _ = services()
+    console.print(
+        "A browser will open.\n"
+        "Log in manually.\n"
+        "Complete any 2FA/CAPTCHA manually.\n"
+        "When the site shows you are logged in, return to the terminal and press Enter.\n"
+        "The app will save the browser session locally.\n"
+        "No password will be stored."
+    )
+    path = AuthSessionService(settings).login(site)
+    console.print(f"Saved local auth session to {path}")
+
+
+@auth_app.command("status")
+def auth_status(site: str | None = typer.Argument(None)) -> None:
+    settings, _ = services()
+    auth = AuthSessionService(settings)
+    statuses = [auth.auth_status(site)] if site else auth.all_statuses()
+    table = Table("Site", "State File Exists", "Last Modified", "Path")
+    for item in statuses:
+        table.add_row(
+            str(item["site"]),
+            "yes" if item["auth_state_exists"] else "no",
+            str(item["last_modified"] or "-"),
+            str(item["auth_state_path"]),
+        )
+    console.print(table)
+
+
+@auth_app.command("logout")
+def auth_logout(site: str, delete_profile: bool = typer.Option(False, "--delete-profile")) -> None:
+    settings, _ = services()
+    if not typer.confirm(f"Delete saved auth state for {site}?"):
+        raise typer.Exit()
+    AuthSessionService(settings).logout(site, delete_profile=delete_profile)
+    console.print(f"Deleted saved auth state for {site}.")
 
 
 @db_app.command("init")
@@ -159,6 +220,60 @@ def add_job(
     console.print(f"Next: pixi run jobagent prepare {job.id}")
 
 
+@app.command("jobs")
+def jobs(
+    status: str | None = typer.Option(None, "--status"),
+    source: str | None = typer.Option(None, "--source"),
+    unprepared: bool = typer.Option(False, "--unprepared"),
+) -> None:
+    _, database = services()
+    table = Table("Job ID", "Company", "Title", "Source", "Source URL", "Status", "Created At", "Prepared?")
+    with database.session() as session:
+        jobs_list = session.exec(select(Job)).all()
+        applications = session.exec(select(Application)).all()
+    prepared_job_ids = {application.job_id for application in applications}
+    for job in jobs_list:
+        prepared = job.id in prepared_job_ids
+        if status and job.status != status:
+            continue
+        if source and source.lower() not in job.source.lower():
+            continue
+        if unprepared and prepared:
+            continue
+        table.add_row(
+            str(job.id),
+            job.company,
+            job.title,
+            job.source,
+            job.source_url or "",
+            job.status,
+            job.created_at.isoformat(),
+            "yes" if prepared else "no",
+        )
+    console.print(table)
+
+
+@app.command("job")
+def job_detail(job_id: int) -> None:
+    _, database = services()
+    with database.session() as session:
+        job = session.exec(select(Job).where(Job.id == job_id)).one()
+        application = session.exec(select(Application).where(Application.job_id == job_id)).first()
+    console.print(
+        {
+            "company": job.company,
+            "title": job.title,
+            "location": job.location,
+            "source": job.source,
+            "source_url": job.source_url,
+            "final_application_url": job.final_application_url,
+            "status": job.status,
+            "description_preview": job.description_text[:300],
+            "application_id": application.id if application else None,
+        }
+    )
+
+
 @app.command("list")
 def list_applications(
     status: str | None = typer.Option(None, "--status"),
@@ -223,7 +338,27 @@ def show(application_id: int) -> None:
 @app.command("approve-answers")
 def approve_answers(application_id: int) -> None:
     settings, database = services()
-    path = ApplicationService(settings, database).approve_answers(application_id)
+    application = ApplicationService(settings, database).get_application(application_id)
+    generated_path = Path(application.folder_path) / "04_application" / "application_answers.generated.json"
+    generated = json.loads(generated_path.read_text(encoding="utf-8"))
+    decisions: dict[str, str] = {}
+    edits: dict[str, str] = {}
+    for index, answer in enumerate(generated):
+        key = str(answer.get("question_label") or index)
+        console.rule(key)
+        console.print(f"Question type: {answer.get('normalized_question_type')}")
+        console.print(f"Generated answer:\n{answer.get('answer')}")
+        console.print(f"Source facts: {answer.get('source_facts_used')}")
+        console.print(f"Sensitive: {'yes' if answer.get('requires_user_review') else 'no'}")
+        console.print(f"Risk notes: {answer.get('risk_notes')}")
+        console.print(f"Confidence: {answer.get('confidence_score')}")
+        choice = typer.prompt("[A] approve [E] edit [R] reject [S] skip [Q] quit", default="S")
+        decisions[key] = choice
+        if choice.lower().startswith("e"):
+            edits[key] = typer.prompt("Edited answer")
+        if choice.lower().startswith("q"):
+            break
+    path = ApplicationService(settings, database).approve_answers(application_id, decisions, edits)
     console.print(f"Approved safe answers saved to {path}")
 
 
@@ -263,8 +398,24 @@ def apply_assist(application_id: int) -> None:
     summary = BrowserService(settings, database).apply_assist(application_id)
     table = Table("Field", "Value")
     for key, value in summary.items():
+        if key == "fill_review":
+            continue
         table.add_row(key, str(value))
     console.print(table)
+    review = summary.get("fill_review")
+    if isinstance(review, list):
+        review_table = Table("Detected field", "Inferred type", "Classification", "Proposed value", "Source file", "Will fill?")
+        for row in review:
+            if isinstance(row, dict):
+                review_table.add_row(
+                    str(row.get("detected_field") or ""),
+                    str(row.get("inferred_type") or ""),
+                    str(row.get("classification") or ""),
+                    str(row.get("proposed_value") or ""),
+                    str(row.get("source_file") or ""),
+                    "yes" if row.get("will_fill") else "no",
+                )
+        console.print(review_table)
 
 
 @app.command("prepare")
